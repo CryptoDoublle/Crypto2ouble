@@ -1,133 +1,108 @@
 !DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Stake Style Dice</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #0f1923;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-      background-color: #1c2a38;
-      margin-top: 50px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px #000;
-    }
-
-    h1 {
-      color: #58a6ff;
-    }
-
-    input, button {
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1em;
-      margin: 10px 0;
-    }
-
-    input[type="number"] {
-      width: 100%;
-    }
-
-    .slider-container {
-      margin: 20px 0;
-    }
-
-    #slider {
-      width: 100%;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 15px;
-    }
-
-    .buttons button {
-      flex: 1;
-      margin: 0 5px;
-      background-color: #2ea043;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .buttons button:hover {
-      background-color: #238636;
-    }
-
-    #result {
-      font-size: 1.4em;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    .green {
-      color: limegreen;
-    }
-
-    .red {
-      color: tomato;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Litepick.io Games</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .game-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .game-item:hover {
+            transform: scale(1.05);
+        }
+        .game-item img {
+            width: 100%;
+            height: auto;
+        }
+        .game-item .info {
+            padding: 10px;
+            text-align: center;
+        }
+        .game-item h3 {
+            margin: 10px 0;
+        }
+        .game-item p {
+            font-size: 14px;
+            color: #555;
+        }
+        .game-item a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .game-item a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Crypto Dice</h1>
 
-    <label>Bet Amount:</label>
-    <input type="number" id="bet" placeholder="Enter bet amount" />
-
-    <div class="slider-container">
-      <label>Win Chance: <span id="chanceLabel">50</span>%</label>
-      <input type="range" min="1" max="98" value="50" id="slider" oninput="updateChance()" />
+<div class="container">
+    <h1>Litepick.io Games</h1>
+    <div class="game-list" id="game-list">
+        <!-- Games will be populated here using JavaScript -->
     </div>
+</div>
 
-    <div class="buttons">
-      <button onclick="roll('under')">Roll Under</button>
-      <button onclick="roll('over')">Roll Over</button>
-    </div>
+<script>
+    // Example game data
+    const games = [
+        { title: "Game 1", description: "This is the first game on the site.", image: "https://via.placeholder.com/300", link: "https://litepick.io/game1" },
+        { title: "Game 2", description: "This is the second game on the site.", image: "https://via.placeholder.com/300", link: "https://litepick.io/game2" },
+        { title: "Game 3", description: "This is the third game on the site.", image: "https://via.placeholder.com/300", link: "https://litepick.io/game3" },
+    ];
 
-    <div id="result"></div>
-  </div>
+    // Function to display the games on the HTML page
+    function displayGames() {
+        const gameListContainer = document.getElementById('game-list');
+        games.forEach(game => {
+            const gameItem = document.createElement('div');
+            gameItem.classList.add('game-item');
 
-  <script>
-    function updateChance() {
-      document.getElementById("chanceLabel").innerText = document.getElementById("slider").value;
+            gameItem.innerHTML = `
+                <img src="${game.image}" alt="${game.title}">
+                <div class="info">
+                    <h3>${game.title}</h3>
+                    <p>${game.description}</p>
+                    <a href="${game.link}" target="_blank">Play Now</a>
+                </div>
+            `;
+
+            gameListContainer.appendChild(gameItem);
+        });
     }
 
-    function roll(direction) {
-      const bet = parseFloat(document.getElementById("bet").value);
-      const chance = parseFloat(document.getElementById("slider").value);
-      const resultEl = document.getElementById("result");
-      const roll = Math.random() * 100;
-      const profit = ((100 / chance) * bet - bet).toFixed(2);
+    // Call the function to display games when the page loads
+    window.onload = displayGames;
+</script>
 
-      let win = false;
-
-      if (direction === "under" && roll < chance) win = true;
-      if (direction === "over" && roll > (100 - chance)) win = true;
-
-      if (isNaN(bet) || bet <= 0) {
-        resultEl.innerHTML = "<span class='red'>Invalid bet amount.</span>";
-        return;
-      }
-
-      if (win) {
-        resultEl.innerHTML = `<span class='green'>You Rolled ${roll.toFixed(2)} — You Win! +${profit}</span>`;
-      } else {
-        resultEl.innerHTML = `<span class='red'>You Rolled ${roll.toFixed(2)} — You Lose!</span>`;
-      }
-    }
-  </script>
 </body>
-</html>
