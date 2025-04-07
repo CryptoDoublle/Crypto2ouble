@@ -1,113 +1,131 @@
 !DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dice Game</title>
+  <meta charset="UTF-8">
+  <title>Stake Style Dice</title>
   <style>
     body {
-      background-color: #0d1117;
-      color: white;
+      margin: 0;
+      background-color: #0f1923;
       font-family: Arial, sans-serif;
+      color: #fff;
       text-align: center;
-      padding: 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background-color: #1c2a38;
+      margin-top: 50px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #000;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
       color: #58a6ff;
-    }
-
-    .slider {
-      width: 80%;
-      margin: 20px auto;
     }
 
     input, button {
       padding: 10px;
-      margin: 10px;
-      border-radius: 8px;
-      font-size: 1em;
       border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      margin: 10px 0;
     }
 
-    button {
-      background-color: #238636;
+    input[type="number"] {
+      width: 100%;
+    }
+
+    .slider-container {
+      margin: 20px 0;
+    }
+
+    #slider {
+      width: 100%;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+    }
+
+    .buttons button {
+      flex: 1;
+      margin: 0 5px;
+      background-color: #2ea043;
       color: white;
       cursor: pointer;
+      transition: 0.3s;
     }
 
-    button:hover {
-      background-color: #2ea043;
+    .buttons button:hover {
+      background-color: #238636;
     }
 
     #result {
+      font-size: 1.4em;
       margin-top: 20px;
-      font-size: 1.5em;
+      font-weight: bold;
     }
 
-    #imageResult {
-      margin-top: 20px;
+    .green {
+      color: limegreen;
     }
 
-    #imageResult img {
-      width: 150px;
-      display: none;
-      margin: auto;
+    .red {
+      color: tomato;
     }
   </style>
 </head>
 <body>
-  <h1>CryptoDice</h1>
+  <div class="container">
+    <h1>Crypto Dice</h1>
 
-  <p>Enter your amount:</p>
-  <input type="number" id="betAmount" placeholder="Enter amount" />
+    <label>Bet Amount:</label>
+    <input type="number" id="bet" placeholder="Enter bet amount" />
 
-  <p>Choose win chance: <span id="chanceValue">50</span>%</p>
-  <input type="range" min="1" max="98" value="50" id="chanceSlider" class="slider" oninput="updateChance()"/>
+    <div class="slider-container">
+      <label>Win Chance: <span id="chanceLabel">50</span>%</label>
+      <input type="range" min="1" max="98" value="50" id="slider" oninput="updateChance()" />
+    </div>
 
-  <br>
-  <button onclick="rollDice()">Roll Dice</button>
+    <div class="buttons">
+      <button onclick="roll('under')">Roll Under</button>
+      <button onclick="roll('over')">Roll Over</button>
+    </div>
 
-  <div id="result"></div>
-  <div id="imageResult">
-    <img id="winImg" src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="Win!" />
-    <img id="loseImg" src="https://media.giphy.com/media/3oz8xLd9DJq2l2VFtu/giphy.gif" alt="Lose!" />
+    <div id="result"></div>
   </div>
 
   <script>
     function updateChance() {
-      const slider = document.getElementById("chanceSlider");
-      document.getElementById("chanceValue").textContent = slider.value;
+      document.getElementById("chanceLabel").innerText = document.getElementById("slider").value;
     }
 
-    function rollDice() {
-      const bet = parseFloat(document.getElementById("betAmount").value);
-      const chance = parseFloat(document.getElementById("chanceSlider").value);
-      const result = document.getElementById("result");
-      const winImg = document.getElementById("winImg");
-      const loseImg = document.getElementById("loseImg");
+    function roll(direction) {
+      const bet = parseFloat(document.getElementById("bet").value);
+      const chance = parseFloat(document.getElementById("slider").value);
+      const resultEl = document.getElementById("result");
+      const roll = Math.random() * 100;
+      const profit = ((100 / chance) * bet - bet).toFixed(2);
 
-      winImg.style.display = "none";
-      loseImg.style.display = "none";
+      let win = false;
+
+      if (direction === "under" && roll < chance) win = true;
+      if (direction === "over" && roll > (100 - chance)) win = true;
 
       if (isNaN(bet) || bet <= 0) {
-        alert("Please enter a valid amount.");
+        resultEl.innerHTML = "<span class='red'>Invalid bet amount.</span>";
         return;
       }
 
-      const roll = Math.random() * 100;
-      const profit = (100 / chance) * bet;
-
-      if (roll < chance) {
-        result.innerHTML = `You rolled ${roll.toFixed(2)}<br> You win <b>${profit.toFixed(2)}</b> coins!`;
-        result.style.color = "lime";
-        winImg.style.display = "block";
+      if (win) {
+        resultEl.innerHTML = `<span class='green'>You Rolled ${roll.toFixed(2)} — You Win! +${profit}</span>`;
       } else {
-        result.innerHTML = `You rolled ${roll.toFixed(2)}<br> You lose!`;
-        result.style.color = "red";
-        loseImg.style.display = "block";
+        resultEl.innerHTML = `<span class='red'>You Rolled ${roll.toFixed(2)} — You Lose!</span>`;
       }
     }
   </script>
