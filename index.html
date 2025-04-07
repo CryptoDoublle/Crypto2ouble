@@ -1,221 +1,79 @@
-
+!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dice Game & Mine Game</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to bottom, #1a202c, #2d3748);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-            flex-direction: column;
-        }
-        .container {
-            background: rgba(44, 47, 52, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            width: 350px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            margin-bottom: 30px;
-        }
-        h1 {
-            font-size: 2em;
-            color: #00c853;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-        }
-        .dice-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .dice {
-            width: 70px;
-            height: 70px;
-            background-color: #ffffff;
-            color: #333;
-            font-size: 2.5em;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-        .dice:hover {
-            transform: scale(1.1);
-        }
-        .btn-roll {
-            padding: 12px 25px;
-            background-color: #00c853;
-            border: none;
-            color: white;
-            font-size: 1.2em;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        .btn-roll:hover {
-            background-color: #03a96b;
-            transform: scale(1.05);
-        }
-        .bet-info {
-            margin-top: 15px;
-            font-size: 1em;
-        }
-        input[type="number"] {
-            padding: 8px;
-            border-radius: 5px;
-            border: none;
-            width: 60px;
-            font-size: 1.1em;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .result {
-            font-size: 1.2em;
-            color: #00c853;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-        .mine-container {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .mine-cell {
-            width: 50px;
-            height: 50px;
-            background-color: #444;
-            border-radius: 10px;
-            color: white;
-            font-size: 1.5em;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .mine-cell:hover {
-            background-color: #00c853;
-        }
-        .mine-cell.clicked {
-            background-color: #555;
-            pointer-events: none;
-        }
-        .mine-result {
-            margin-top: 20px;
-            font-size: 1.4em;
-            color: #ff4081;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CryptoDouble Dice</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; text-align: center; }
+    .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, select, button { padding: 10px; margin: 10px 0; width: 100%; font-size: 16px; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
+  <div class="container" id="login">
+    <h2>Welcome to CryptoDouble</h2>
+    <p>Enter your username to start:</p>
+    <input type="text" id="username" placeholder="Username" />
+    <button onclick="enterSite()">Enter</button>
+  </div>
 
-<!-- Dice Game Section -->
-<div class="container">
-    <h1>Dice Roll Game</h1>
-    <div class="dice-container">
-        <div class="dice" id="dice1">1</div>
-        <div class="dice" id="dice2">1</div>
-    </div>
+  <div class="container hidden" id="dashboard">
+    <h2>Hello, <span id="displayName"></span></h2>
+    <label for="currency">Choose your currency:</label>
+    <select id="currency" onchange="updateAddress()">
+      <option value="BTC">Bitcoin (BTC)</option>
+      <option value="DOGE">Dogecoin (DOGE)</option>
+      <option value="USDT">USDT (TRC-20)</option>
+    </select>
+    <p><strong>Deposit Address:</strong></p>
+    <p id="walletAddress">Loading...</p>
 
-    <button class="btn-roll" onclick="rollDice()">Roll Dice</button>
+    <p><strong>Your Balance:</strong> <span id="balance">0</span></p>
 
-    <div class="bet-info">
-        <p>Place your bet: <input type="number" id="betAmount" value="1" min="1" step="1"></p>
-    </div>
-    
-    <div class="result" id="result"></div>
-</div>
+    <h3>Play Dice</h3>
+    <p>Pick a number between 1 and 100</p>
+    <input type="number" id="guess" min="1" max="100" placeholder="Your guess" />
+    <button onclick="rollDice()">Roll</button>
+    <p id="result"></p>
+  </div>
 
-<!-- Mine Game Section -->
-<div class="container">
-    <h1>Mine Game</h1>
-    <div class="mine-container">
-        <div class="mine-cell" onclick="mineClick(this, 1)"></div>
-        <div class="mine-cell" onclick="mineClick(this, 2)"></div>
-        <div class="mine-cell" onclick="mineClick(this, 3)"></div>
-    </div>
-    <div class="mine-container">
-        <div class="mine-cell" onclick="mineClick(this, 4)"></div>
-        <div class="mine-cell" onclick="mineClick(this, 5)"></div>
-        <div class="mine-cell" onclick="mineClick(this, 6)"></div>
-    </div>
-    <div class="mine-container">
-        <div class="mine-cell" onclick="mineClick(this, 7)"></div>
-        <div class="mine-cell" onclick="mineClick(this, 8)"></div>
-        <div class="mine-cell" onclick="mineClick(this, 9)"></div>
-    </div>
-    <div class="mine-result" id="mineResult"></div>
-</div>
+  <script>
+    const addresses = {
+      BTC: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+      DOGE: 'DFundExampleAddres123456789',
+      USDT: 'TExampleTronAddress12345678'
+    };
 
-<script>
-    // Dice Game Logic
+    function enterSite() {
+      const username = document.getElementById('username').value;
+      if (username.trim()) {
+        document.getElementById('displayName').textContent = username;
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        updateAddress();
+      }
+    }
+
+    function updateAddress() {
+      const currency = document.getElementById('currency').value;
+      document.getElementById('walletAddress').textContent = addresses[currency];
+    }
+
     function rollDice() {
-        // Get bet amount
-        const betAmount = parseInt(document.getElementById("betAmount").value);
-        
-        // Generate random values for dice (between 1 and 6)
-        const dice1 = Math.floor(Math.random() * 6) + 1;
-        const dice2 = Math.floor(Math.random() * 6) + 1;
+      const guess = parseInt(document.getElementById('guess').value);
+      const roll = Math.floor(Math.random() * 100) + 1;
+      let result = '';
 
-        // Update the dice display
-        document.getElementById("dice1").textContent = dice1;
-        document.getElementById("dice2").textContent = dice2;
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        result = 'Please enter a valid number between 1 and 100.';
+      } else {
+        result = `Dice rolled: ${roll}. You ` + (roll === guess ? 'WIN!' : 'lose.');
+      }
 
-        // Calculate sum of the dice rolls
-        const sum = dice1 + dice2;
-
-        // Display result
-        document.getElementById("result").textContent = `You rolled a ${sum}! Bet amount: $${betAmount}`;
+      document.getElementById('result').textContent = result;
     }
-
-    // Mine Game Logic
-    let mineCells = [false, false, false, false, false, false, false, false, false]; // false means no mine, true means mine
-    let mineResultDisplayed = false;
-
-    function resetMineGame() {
-        mineCells = [false, false, false, false, false, false, false, false, false];
-        document.querySelectorAll('.mine-cell').forEach(cell => {
-            cell.classList.remove('clicked');
-            cell.style.backgroundColor = '#444';
-        });
-        mineResultDisplayed = false;
-        document.getElementById("mineResult").textContent = '';
-    }
-
-    function mineClick(cell, index) {
-        if (mineResultDisplayed) return;
-        
-        // Randomly place a mine
-        if (Math.random() < 0.3 && !mineCells[index - 1]) {
-            mineCells[index - 1] = true;
-            cell.style.backgroundColor = 'red';
-            document.getElementById("mineResult").textContent = 'Game Over! You hit a mine!';
-            mineResultDisplayed = true;
-        } else {
-            cell.classList.add('clicked');
-            cell.style.backgroundColor = '#555';
-        }
-
-        // Check if all cells are cleared without hitting a mine
-        if (mineCells.every((cell) => cell === true || cell.classList.contains('clicked'))) {
-            document.getElementById("mineResult").textContent = 'You Win! No mines hit!';
-            mineResultDisplayed = true;
-        }
-    }
-</script>
-
+  </script>
 </body>
+</html>
