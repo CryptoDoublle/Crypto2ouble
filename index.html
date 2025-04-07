@@ -3,106 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Litepick.io Games</title>
+    <title>Dice Game - Stake.com Style</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #1e1e1e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
         }
         .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
+            text-align: center;
+            background-color: #2c2f36;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
         }
         h1 {
-            text-align: center;
-            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
         }
-        .game-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        .dice-container {
+            display: flex;
+            justify-content: center;
             gap: 20px;
         }
-        .game-item {
+        .dice {
+            width: 80px;
+            height: 80px;
             background-color: #fff;
+            color: black;
+            font-size: 2.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+        .btn-roll {
+            padding: 15px 30px;
+            background-color: #00c853;
+            border: none;
+            color: white;
+            font-size: 1.2em;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
         }
-        .game-item:hover {
-            transform: scale(1.05);
+        .btn-roll:hover {
+            background-color: #00b34a;
         }
-        .game-item img {
-            width: 100%;
-            height: auto;
+        .bet-info {
+            margin-top: 20px;
+            font-size: 1.2em;
         }
-        .game-item .info {
-            padding: 10px;
-            text-align: center;
-        }
-        .game-item h3 {
-            margin: 10px 0;
-        }
-        .game-item p {
-            font-size: 14px;
-            color: #555;
-        }
-        .game-item a {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .game-item a:hover {
-            background-color: #0056b3;
+        .result {
+            font-size: 1.5em;
+            color: #00c853;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Litepick.io Games</h1>
-    <div class="game-list" id="game-list">
-        <!-- Games will be populated here using JavaScript -->
+    <h1>Dice Roll Game</h1>
+    
+    <div class="dice-container">
+        <div class="dice" id="dice1">1</div>
+        <div class="dice" id="dice2">1</div>
     </div>
+
+    <button class="btn-roll" onclick="rollDice()">Roll Dice</button>
+
+    <div class="bet-info">
+        <p>Place your bet: <input type="number" id="betAmount" value="1" min="1" step="1"></p>
+    </div>
+    
+    <div class="result" id="result"></div>
 </div>
 
 <script>
-    // Example game data
-    const games = [
-        { title: "Game 1", description: "This is the first game on the site.", image: "https://via.placeholder.com/300", link: "https://litepick.io/game1" },
-        { title: "Game 2", description: "This is the second game on the site.", image: "https://via.placeholder.com/300", link: "https://litepick.io/game2" },
-        { title: "Game 3", description: "This is the third game on the site.", image: "https://via.placeholder.com/300", link: "https://litepick.io/game3" },
-    ];
+    function rollDice() {
+        // Get bet amount
+        const betAmount = parseInt(document.getElementById("betAmount").value);
+        
+        // Generate random values for dice (between 1 and 6)
+        const dice1 = Math.floor(Math.random() * 6) + 1;
+        const dice2 = Math.floor(Math.random() * 6) + 1;
 
-    // Function to display the games on the HTML page
-    function displayGames() {
-        const gameListContainer = document.getElementById('game-list');
-        games.forEach(game => {
-            const gameItem = document.createElement('div');
-            gameItem.classList.add('game-item');
+        // Update the dice display
+        document.getElementById("dice1").textContent = dice1;
+        document.getElementById("dice2").textContent = dice2;
 
-            gameItem.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
-                <div class="info">
-                    <h3>${game.title}</h3>
-                    <p>${game.description}</p>
-                    <a href="${game.link}" target="_blank">Play Now</a>
-                </div>
-            `;
+        // Calculate sum of the dice rolls
+        const sum = dice1 + dice2;
 
-            gameListContainer.appendChild(gameItem);
-        });
+        // Display result
+        document.getElementById("result").textContent = `You rolled a ${sum}! Bet amount: $${betAmount}`;
     }
-
-    // Call the function to display games when the page loads
-    window.onload = displayGames;
 </script>
 
 </body>
