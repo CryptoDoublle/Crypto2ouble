@@ -9,16 +9,26 @@
     .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     input, select, button { padding: 10px; margin: 10px 0; width: 100%; font-size: 16px; }
     .hidden { display: none; }
+    #intro img { width: 100%; max-width: 300px; cursor: pointer; border-radius: 10px; }
   </style>
 </head>
 <body>
-  <div class="container" id="login">
+
+  <!-- Intro Image Page -->
+  <div class="container" id="intro">
     <h2>Welcome to CryptoDouble</h2>
-    <p>Enter your username to start:</p>
+    <p>Click to play Dice</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Dice_2-4.svg/2048px-Dice_2-4.svg.png" onclick="goToLogin()" alt="Dice Image" />
+  </div>
+
+  <!-- Login Section -->
+  <div class="container hidden" id="login">
+    <h2>Enter your username</h2>
     <input type="text" id="username" placeholder="Username" />
     <button onclick="enterSite()">Enter</button>
   </div>
 
+  <!-- Dashboard Section -->
   <div class="container hidden" id="dashboard">
     <h2>Hello, <span id="displayName"></span></h2>
     <label for="currency">Choose your currency:</label>
@@ -45,6 +55,11 @@
       DOGE: 'DFundExampleAddres123456789',
       USDT: 'TExampleTronAddress12345678'
     };
+
+    function goToLogin() {
+      document.getElementById('intro').classList.add('hidden');
+      document.getElementById('login').classList.remove('hidden');
+    }
 
     function enterSite() {
       const username = document.getElementById('username').value;
