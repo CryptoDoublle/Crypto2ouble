@@ -1,5 +1,4 @@
-!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,20 +11,15 @@
     #intro img { width: 100%; max-width: 300px; cursor: pointer; border-radius: 10px; }
   </style>
 </head>
-<body>
-
-  <!-img src="images/dice.png" onclick="goToLogin()" alt="Dice Image" />
-
-
-  <!-- Login Section -->
-  <div class="container hidden" id="login">
+<body>  <!-- Intro Image Page -->  <div class="container" id="intro">
+    <h2>Welcome to CryptoDouble</h2>
+    <p>Click to play Dice</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Dice_2-4.svg/2048px-Dice_2-4.svg.png" onclick="goToLogin()" alt="Dice Image" />
+  </div>  <!-- Login Section -->  <div class="container hidden" id="login">
     <h2>Enter your username</h2>
     <input type="text" id="username" placeholder="Username" />
     <button onclick="enterSite()">Enter</button>
-  </div>
-
-  <!-- Dashboard Section -->
-  <div class="container hidden" id="dashboard">
+  </div>  <!-- Dashboard Section -->  <div class="container hidden" id="dashboard">
     <h2>Hello, <span id="displayName"></span></h2>
     <label for="currency">Choose your currency:</label>
     <select id="currency" onchange="updateAddress()">
@@ -34,18 +28,15 @@
       <option value="USDT">USDT (TRC-20)</option>
     </select>
     <p><strong>Deposit Address:</strong></p>
-    <p id="walletAddress">Loading...</p>
+    <p id="walletAddress">Loading...</p><p><strong>Your Balance:</strong> <span id="balance">0</span></p>
 
-    <p><strong>Your Balance:</strong> <span id="balance">0</span></p>
+<h3>Play Dice</h3>
+<p>Pick a number between 1 and 100</p>
+<input type="number" id="guess" min="1" max="100" placeholder="Your guess" />
+<button onclick="rollDice()">Roll</button>
+<p id="result"></p>
 
-    <h3>Play Dice</h3>
-    <p>Pick a number between 1 and 100</p>
-    <input type="number" id="guess" min="1" max="100" placeholder="Your guess" />
-    <button onclick="rollDice()">Roll</button>
-    <p id="result"></p>
-  </div>
-
-  <script>
+  </div>  <script>
     const addresses = {
       BTC: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
       DOGE: 'DFundExampleAddres123456789',
@@ -85,6 +76,5 @@
 
       document.getElementById('result').textContent = result;
     }
-  </script>
-</body>
+  </script></body>
 </html>
