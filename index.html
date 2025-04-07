@@ -2,79 +2,204 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CryptoDouble Dice</title>
+  <title>CryptoDouble Games</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; text-align: center; }
-    .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, select, button { padding: 10px; margin: 10px 0; width: 100%; font-size: 16px; }
-    .hidden { display: none; }
-    #intro img { width: 100%; max-width: 300px; cursor: pointer; border-radius: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+    .games {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .game-card {
+      width: 48%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #f9f9f9;
+    }
+    .game-card img {
+      max-width: 100%;
+      height: 80px;
+      object-fit: contain;
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
-<body>  <!-- Intro Image Page -->  <div class="container" id="intro">
+<body>
+  <div class="container">
     <h2>Welcome to CryptoDouble</h2>
-    <p>Click to play Dice</p>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Dice_2-4.svg/2048px-Dice_2-4.svg.png" onclick="goToLogin()" alt="Dice Image" />
-  </div>  <!-- Login Section -->  <div class="container hidden" id="login">
-    <h2>Enter your username</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <button onclick="enterSite()">Enter</button>
-  </div>  <!-- Dashboard Section -->  <div class="container hidden" id="dashboard">
-    <h2>Hello, <span id="displayName"></span></h2>
-    <label for="currency">Choose your currency:</label>
-    <select id="currency" onchange="updateAddress()">
-      <option value="BTC">Bitcoin (BTC)</option>
-      <option value="DOGE">Dogecoin (DOGE)</option>
-      <option value="USDT">USDT (TRC-20)</option>
-    </select>
-    <p><strong>Deposit Address:</strong></p>
-    <p id="walletAddress">Loading...</p><p><strong>Your Balance:</strong> <span id="balance">0</span></p>
+    <div id="login">
+      <p>Enter your username:</p>
+      <input type="text" id="username" placeholder="Username">
+      <button onclick="enterGame()">Start</button>
+    </div><div id="menu" class="hidden">
+  <h3>Hello, <span id="player"></span></h3>
+  <p>Balance: <span id="balance">1000</span> USDT</p>
+  <div class="games">
+    <div class="game-card" onclick="showGame('dice')">
+      <img src="images/dice.png" alt="Dice Game">
+      <p>Dice</p>
+    </div>
+    <div class="game-card" onclick="showGame('ladder')">
+      <img src="images/ladder.png" alt="Crypto Ladder">
+      <p>Crypto Ladder</p>
+    </div>
+    <div class="game-card" onclick="showGame('block')">
+      <img src="images/blocks.png" alt="Pick the Block">
+      <p>Pick the Block</p>
+    </div>
+    <div class="game-card" onclick="showGame('race')">
+      <img src="images/race.png" alt="Coin Race">
+      <p>Coin Race</p>
+    </div>
+    <div class="game-card" onclick="showGame('wheel')">
+      <img src="images/wheel.png" alt="Wheel of Crypto">
+      <p>Wheel of Crypto</p>
+    </div>
+  </div>
+</div>
 
-<h3>Play Dice</h3>
-<p>Pick a number between 1 and 100</p>
-<input type="number" id="guess" min="1" max="100" placeholder="Your guess" />
-<button onclick="rollDice()">Roll</button>
-<p id="result"></p>
+<div id="game" class="hidden">
+  <div id="gameContent"></div>
+  <button onclick="backToMenu()">Back</button>
+</div>
 
   </div>  <script>
-    const addresses = {
-      BTC: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
-      DOGE: 'DFundExampleAddres123456789',
-      USDT: 'TExampleTronAddress12345678'
-    };
+    let balance = 1000;
 
-    function goToLogin() {
-      document.getElementById('intro').classList.add('hidden');
-      document.getElementById('login').classList.remove('hidden');
-    }
-
-    function enterSite() {
-      const username = document.getElementById('username').value;
-      if (username.trim()) {
-        document.getElementById('displayName').textContent = username;
+    function enterGame() {
+      const name = document.getElementById('username').value;
+      if (name.trim()) {
+        document.getElementById('player').textContent = name;
         document.getElementById('login').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        updateAddress();
+        document.getElementById('menu').classList.remove('hidden');
       }
     }
 
-    function updateAddress() {
-      const currency = document.getElementById('currency').value;
-      document.getElementById('walletAddress').textContent = addresses[currency];
+    function updateBalance(change) {
+      balance += change;
+      document.getElementById('balance').textContent = balance;
     }
 
-    function rollDice() {
-      const guess = parseInt(document.getElementById('guess').value);
-      const roll = Math.floor(Math.random() * 100) + 1;
-      let result = '';
+    function showGame(type) {
+      document.getElementById('menu').classList.add('hidden');
+      document.getElementById('game').classList.remove('hidden');
+      const container = document.getElementById('gameContent');
+      container.innerHTML = '';
 
-      if (isNaN(guess) || guess < 1 || guess > 100) {
-        result = 'Please enter a valid number between 1 and 100.';
+      if (type === 'dice') {
+        container.innerHTML = `
+          <h3>Dice Game</h3>
+          <p>Guess a number 1-6:</p>
+          <input type='number' id='diceGuess' min='1' max='6'>
+          <button onclick='playDice()'>Roll</button>
+          <p id='diceResult'></p>
+        `;
+      } else if (type === 'ladder') {
+        container.innerHTML = `
+          <h3>Crypto Ladder</h3>
+          <p>Each step increases reward, but you might fall!</p>
+          <button onclick='stepLadder()'>Take Step</button>
+          <p id='ladderResult'></p>
+        `;
+      } else if (type === 'block') {
+        container.innerHTML = `
+          <h3>Pick the Block</h3>
+          <p>One of three blocks has a reward:</p>
+          <button onclick='pickBlock(1)'>Block 1</button>
+          <button onclick='pickBlock(2)'>Block 2</button>
+          <button onclick='pickBlock(3)'>Block 3</button>
+          <p id='blockResult'></p>
+        `;
+      } else if (type === 'race') {
+        container.innerHTML = `
+          <h3>Coin Race</h3>
+          <p>Pick a coin:</p>
+          <button onclick='coinRace("BTC")'>Bitcoin</button>
+          <button onclick='coinRace("DOGE")'>Dogecoin</button>
+          <button onclick='coinRace("USDT")'>USDT</button>
+          <p id='raceResult'></p>
+        `;
+      } else if (type === 'wheel') {
+        container.innerHTML = `
+          <h3>Wheel of Crypto</h3>
+          <button onclick='spinWheel()'>Spin</button>
+          <p id='wheelResult'></p>
+        `;
+      }
+    }
+
+    function playDice() {
+      const guess = parseInt(document.getElementById('diceGuess').value);
+      const roll = Math.floor(Math.random() * 6) + 1;
+      const win = guess === roll ? 100 : -50;
+      updateBalance(win);
+      document.getElementById('diceResult').textContent = `Dice rolled ${roll}. ${win > 0 ? 'You win!' : 'You lose!'}`;
+    }
+
+    let ladderStep = 0;
+    function stepLadder() {
+      if (Math.random() < 0.8) {
+        ladderStep++;
+        let reward = ladderStep * 50;
+        updateBalance(50);
+        document.getElementById('ladderResult').textContent = `Step ${ladderStep}. Reward: ${reward} USDT.`;
       } else {
-        result = `Dice rolled: ${roll}. You ` + (roll === guess ? 'WIN!' : 'lose.');
+        updateBalance(-ladderStep * 50);
+        document.getElementById('ladderResult').textContent = `You fell from step ${ladderStep}! Lost ${(ladderStep * 50)} USDT.`;
+        ladderStep = 0;
       }
+    }
 
-      document.getElementById('result').textContent = result;
+    function pickBlock(choice) {
+      const winBlock = Math.floor(Math.random() * 3) + 1;
+      const win = choice === winBlock ? 200 : -50;
+      updateBalance(win);
+      document.getElementById('blockResult').textContent = `You picked ${choice}. Winning block: ${winBlock}. ${win > 0 ? 'Win!' : 'Try again.'}`;
+    }
+
+    function coinRace(pick) {
+      const coins = ['BTC', 'DOGE', 'USDT'];
+      const winner = coins[Math.floor(Math.random() * coins.length)];
+      const win = pick === winner ? 150 : -75;
+      updateBalance(win);
+      document.getElementById('raceResult').textContent = `${winner} won the race. ${pick === winner ? 'Congrats!' : 'Not your lucky pick.'}`;
+    }
+
+    function spinWheel() {
+      const outcomes = [100, -50, 0, 200, -100];
+      const result = outcomes[Math.floor(Math.random() * outcomes.length)];
+      updateBalance(result);
+      document.getElementById('wheelResult').textContent = `Wheel result: ${result} USDT ${result > 0 ? 'gained!' : result < 0 ? 'lost!' : 'nothing.'}`;
+    }
+
+    function backToMenu() {
+      document.getElementById('game').classList.add('hidden');
+      document.getElementById('menu').classList.remove('hidden');
     }
   </script></body>
 </html>
