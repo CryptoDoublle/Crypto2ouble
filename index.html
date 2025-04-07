@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -42,9 +42,18 @@
       background-color: #2ea043;
     }
 
+    #gameArea, #loginArea {
+      margin-top: 30px;
+    }
+
     #gameArea {
       display: none;
-      margin-top: 30px;
+    }
+
+    #welcome {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      color: #58a6ff;
     }
 
     #result {
@@ -55,10 +64,17 @@
 </head>
 <body>
   <h1>CryptoDouble</h1>
-  <p>Enter your crypto amount and try your luck! Will you double it?</p>
-  <button onclick="startGame()">Start Playing</button>
+  
+  <div id="loginArea">
+    <p>Please enter your username to start:</p>
+    <input type="text" id="username" placeholder="Username" />
+    <br>
+    <button onclick="login()">Login</button>
+  </div>
 
   <div id="gameArea">
+    <div id="welcome"></div>
+    <p>Enter your crypto amount and try your luck! Will you double it?</p>
     <input type="number" id="amount" placeholder="Enter amount" />
     <br>
     <button onclick="playGame()">Double Now</button>
@@ -66,8 +82,15 @@
   </div>
 
   <script>
-    function startGame() {
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      if (username === "") {
+        alert("Please enter a username.");
+        return;
+      }
+      document.getElementById('loginArea').style.display = 'none';
       document.getElementById('gameArea').style.display = 'block';
+      document.getElementById('welcome').textContent = `Welcome, ${username}!`;
     }
 
     function playGame() {
@@ -77,7 +100,7 @@
         return;
       }
 
-      const win = Math.random() < 0.5; // 50% chance
+      const win = Math.random() < 0.5;
       const result = document.getElementById('result');
       if (win) {
         result.textContent = `Congrats! You won ${amount * 2} coins!`;
@@ -89,4 +112,3 @@
     }
   </script>
 </body>
-<
