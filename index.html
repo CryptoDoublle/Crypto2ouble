@@ -1,13 +1,92 @@
-
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CryptoDouble</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #c9d1d9;
+    }
+
+    button, input {
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #238636;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2ea043;
+    }
+
+    #gameArea {
+      display: none;
+      margin-top: 30px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.5em;
+    }
+  </style>
 </head>
 <body>
   <h1>CryptoDouble</h1>
-  <p>Game HTML content goes here...</p>
+  <p>Enter your crypto amount and try your luck! Will you double it?</p>
+  <button onclick="startGame()">Start Playing</button>
+
+  <div id="gameArea">
+    <input type="number" id="amount" placeholder="Enter amount" />
+    <br>
+    <button onclick="playGame()">Double Now</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function startGame() {
+      document.getElementById('gameArea').style.display = 'block';
+    }
+
+    function playGame() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+      }
+
+      const win = Math.random() < 0.5; // 50% chance
+      const result = document.getElementById('result');
+      if (win) {
+        result.textContent = `Congrats! You won ${amount * 2} coins!`;
+        result.style.color = 'lime';
+      } else {
+        result.textContent = 'Oops! You lost the amount.';
+        result.style.color = 'red';
+      }
+    }
+  </script>
 </body>
-</html>
+<
